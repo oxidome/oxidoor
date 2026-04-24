@@ -2,9 +2,11 @@
 members = [
   ".",
   "oxidoor-core",
-  "oxidoor-embedded",
   "oxidoor-embedded-server",
   "oxidoor-web-server",
+]
+exclude = [
+  "oxidoor-embedded",
 ]
 resolver = "2"
 
@@ -31,20 +33,25 @@ thiserror = "2.0"
 tracing = "0.1"
 tracing-subscriber = "0.3"
 
-[package]
-name = "oxidoor"
-edition = "2024"
-version.workspace = true
-description.workspace = true
-authors.workspace = true
-license.workspace = true
-repository.workspace = true
+# [package]
+# name = "oxidoor"
+# edition = "2024"
+# version.workspace = true
+# description.workspace = true
+# authors.workspace = true
+# license.workspace = true
+# repository.workspace = true
 
-[dependencies]
+# [dependencies]
 
-[profile.release]
-opt-level = "s"
+# [profile.release]
+# opt-level = "s"
 
-[profile.dev]
-debug = true    # Symbols are nice and they don't increase the size on Flash
-opt-level = "z"
+# [profile.dev]
+# debug = true    # Symbols are nice and they don't increase the size on Flash
+# opt-level = "z"
+
+[workspace.metadata.esp-idf-sys]
+esp_idf_tools_install_dir = "global"
+esp_idf_sdkconfig_defaults = ["hello2/sdkconfig.defaults"]
+esp_idf_sys_root_crate = "hello2"

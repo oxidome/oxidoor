@@ -16,8 +16,12 @@
 
 use clap::Parser;
 use config::{Config, ConfigError, File};
+use once_cell::sync::Lazy;
 use serde::Deserialize;
 use std::path::PathBuf;
+
+pub static CONFIG: Lazy<Settings> =
+    Lazy::new(|| Settings::new().expect("Failed to load configuration"));
 
 #[derive(Parser, Debug)]
 #[command(name = "oxidoor-server")]
@@ -25,7 +29,7 @@ use std::path::PathBuf;
 struct Cli {
     /// Configuration file path
     #[arg(short, long, value_name = "FILE")]
-    config: Option<String>,
+    config: Option<PathBuf>,
 
     /// Server address (override configuration file)
     #[arg(long, env = "APP_SERVER_HOST")]
@@ -44,7 +48,7 @@ struct Cli {
 pub struct Settings {
     pub log_level: String,
     pub app: AppConfig,
-    pub database: DatabaseConfig,
+    pub db: DatabaseConfig,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -56,10 +60,28 @@ pub struct AppConfig {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-#[serde(tag = "database", rename_all = "snake_case")]
+#[serde(tag = "type", rename_all = "lowercase")]
 pub enum DatabaseConfig {
-    Sqlite { url: String },
-    Postgresql { url: String },
+    Sqlite {
+        #[serde(default = "default_sqlite_url")]
+        url: String,
+    },
+    Postgresql {
+        url: String,
+    },
+}
+
+impl DatabaseConfig {
+    pub fn url(&self) -> String {
+        match self {
+            DatabaseConfig::Sqlite { url } => url.clone(),
+            DatabaseConfig::Postgresql { url } => url.clone(),
+        }
+    }
+}
+
+fn default_sqlite_url() -> String {
+    "sqlite://./data.db".to_string()
 }
 
 impl Settings {

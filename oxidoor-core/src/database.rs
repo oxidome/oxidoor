@@ -34,37 +34,31 @@ struct DatabaseInner {
     connection: OnceCell<DatabaseConnection>,
     /// Database connection URL
     database_url: String,
-    /// Minimum number of connections in the pool
-    min_connections: u32,
-    /// Maximum number of connections in the pool
-    max_connections: u32,
 }
 
 impl Database {
     /// Creates a new Database instance without establishing connection
     /// The actual connection will be established on first use
-    pub fn new(database_url: &str, min_connections: u32, max_connections: u32) -> Self {
+    pub fn new(database_url: &str) -> Self {
         Self {
             inner: Arc::new(DatabaseInner {
                 connection: OnceCell::new(),
                 database_url: database_url.to_string(),
-                min_connections,
-                max_connections,
             }),
         }
     }
 
     /// Creates a Database instance from configuration
     pub fn from_config(config: &DatabaseConfig) -> Self {
-        Self::new(&config.url, config.min_connections, config.max_connections)
+        Self::new(&config.url())
     }
 
     /// Initializes the database connection with configured parameters
     async fn init_connection(&self) -> Result<DatabaseConnection> {
         let mut opt = ConnectOptions::new(self.inner.database_url.clone());
 
-        opt.min_connections(self.inner.min_connections)
-            .max_connections(self.inner.max_connections)
+        opt.min_connections(1)
+            .max_connections(10)
             .acquire_timeout(Duration::from_secs(8))
             .connect_timeout(Duration::from_secs(8))
             .idle_timeout(Duration::from_secs(8))

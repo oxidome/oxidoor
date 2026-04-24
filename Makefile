@@ -2,7 +2,7 @@ server:
 	cargo build --release -p oxidoor-server
 
 embedded:
-	cargo build --release -p oxidoor-embedded
+	cd oxidoor-embedded && cargo build --release -p oxidoor-embedded
 
 .PHONY: license
 flash:

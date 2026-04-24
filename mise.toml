@@ -1,0 +1,10 @@
+experimental_monorepo_root = true
+
+[tools]
+# node = "24"
+rust = "1.90"
+
+# "npm:pnpm" = "10.20"
+# "npm:tsx" = "latest"
+# "npm:@biomejs/biome"= "2.3.1"
+

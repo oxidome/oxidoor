@@ -15,7 +15,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use thiserror::Error;
-use uuid::Uuid;
 
 #[derive(Error, Debug)]
 pub enum Error {

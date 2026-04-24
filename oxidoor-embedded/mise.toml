@@ -1,0 +1,4 @@
+[tools]
+rust = { version = "1.90", targets = "xtensa-esp32s3-espidf" }
+"cargo:espup" = "latest"
+

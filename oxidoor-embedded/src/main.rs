@@ -20,6 +20,8 @@ use esp_idf_svc::hal::{
     prelude::Peripherals,
 };
 
+mod lock;
+
 mod task;
 use static_cell::StaticCell;
 use task::door_control;
